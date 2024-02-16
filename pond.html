@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            .card {
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                transition: 0.3s;
+                width: 250px;
+                border-radius: 5px;
+            }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            img {
+                border-radius: 5px 5px 0 0;
+                width: 250px;
+                height: 150px;
+            }
+
+            .container {
+                padding: 2px 16px;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div id="pond"></div>
+
+        <script>
+            let ducks = [];
+
+            async function getAll(){
+            let host = "http://localhost:8080";
+            let request = {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            };
+
+            let response = await fetch(host + "/ducks", request);
+            let result = await response.json();
+            ducks = result;
+
+            expandPond();
+        }
+
+            function expandPond(){
+                let host = "http://localhost:8080";
+                const pond = document.getElementById("pond");
+
+                for (let duck of ducks){
+                    const card = document.createElement("div");
+                    card.classList.add("card");
+
+                    const duckImage = document.createElement("img");
+                    duckImage.src = host + "/ducks/" + duck.id + "/image";
+                    duckImage.alt = "Avatar";
+
+                    const contain = document.createElement("div");
+                    contain.classList.add("container");
+
+                    const headER = document.createElement("headER");
+                    headER.innerHTML= "<b>" + duck.id + "</b>";
+
+                    const p = document.createElement("p");
+                    p.textContent = duck.type;
+
+                    contain.appendChild(headER);
+                    contain.appendChild(p)
+                    card.appendChild(duckImage);
+                    card.appendChild(contain);
+                    pond.appendChild(card);
+                }
+            }
+            getAll();
+        </script>
+        
+    </body>
+</html>
